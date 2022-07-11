@@ -1,0 +1,101 @@
+#! /c/iverilog/bin/vvp
+:ivl_version "0.9.7 " "(v0_9_7)";
+:vpi_time_precision - 12;
+:vpi_module "system";
+:vpi_module "v2005_math";
+:vpi_module "va_math";
+S_01128538 .scope module, "counter_trans_tb" "counter_trans_tb" 2 2;
+ .timescale -12 -12;
+P_01127A6C .param/l "STEP" 2 5, +C4<01111101000>;
+v0112E3C0_0 .var "CLK", 0 0;
+v0112E418_0 .net "OUT", 0 0, L_00FE0218; 1 drivers
+v0112E470_0 .var "RESETL", 0 0;
+S_01128428 .scope module, "counter_trans" "counter_trans" 2 7, 3 1, S_01128538;
+ .timescale -12 -12;
+v0112A128_0 .net "CLK", 0 0, v0112E3C0_0; 1 drivers
+v01122A78_0 .alias "OUT", 0 0, v0112E418_0;
+v0112E4C8_0 .net "RESETL", 0 0, v0112E470_0; 1 drivers
+v0112E680_0 .net *"_s1", 0 0, L_00FDF980; 1 drivers
+v0112E998_0 .net *"_s11", 2 0, C4<000>; 1 drivers
+v0112E9F0_0 .net *"_s12", 3 0, L_00FDFFB0; 1 drivers
+v0112E730_0 .net *"_s15", 0 0, L_00FE0060; 1 drivers
+v0112E7E0_0 .net *"_s16", 3 0, L_00FDF9D8; 1 drivers
+v0112E8E8_0 .net *"_s19", 2 0, C4<000>; 1 drivers
+v0112E520_0 .net *"_s2", 3 0, L_00FE02C8; 1 drivers
+v0112E578_0 .net *"_s20", 3 0, L_00FDFA30; 1 drivers
+v0112EA48_0 .net *"_s23", 0 0, L_00FDFF58; 1 drivers
+v0112E5D0_0 .net *"_s24", 3 0, L_00FDFC40; 1 drivers
+v0112E890_0 .net *"_s27", 2 0, C4<000>; 1 drivers
+v0112E788_0 .net *"_s28", 3 0, L_00FE00B8; 1 drivers
+v0112EAF8_0 .net *"_s30", 3 0, C4<0010>; 1 drivers
+v0112E838_0 .net *"_s32", 3 0, L_00FDFA88; 1 drivers
+v0112E628_0 .net *"_s5", 2 0, C4<000>; 1 drivers
+v0112E6D8_0 .net *"_s7", 0 0, L_00FE0320; 1 drivers
+v0112E940_0 .net *"_s8", 3 0, L_00FDFF00; 1 drivers
+v0112EAA0_0 .net "tmp", 3 0, v0112A078_0; 1 drivers
+L_00FDF980 .part v0112A078_0, 3, 1;
+L_00FE02C8 .concat [ 1 3 0 0], L_00FDF980, C4<000>;
+L_00FE0320 .part v0112A078_0, 2, 1;
+L_00FDFF00 .concat [ 1 3 0 0], L_00FE0320, C4<000>;
+L_00FDFFB0 .arith/sum 4, L_00FE02C8, L_00FDFF00;
+L_00FE0060 .part v0112A078_0, 1, 1;
+L_00FDF9D8 .concat [ 1 3 0 0], L_00FE0060, C4<000>;
+L_00FDFA30 .arith/sum 4, L_00FDFFB0, L_00FDF9D8;
+L_00FDFF58 .part v0112A078_0, 0, 1;
+L_00FDFC40 .concat [ 1 3 0 0], L_00FDFF58, C4<000>;
+L_00FE00B8 .arith/sum 4, L_00FDFA30, L_00FDFC40;
+L_00FDFA88 .arith/mod 4, L_00FE00B8, C4<0010>;
+L_00FE0218 .part L_00FDFA88, 0, 1;
+S_01128648 .scope module, "counter" "counter" 3 6, 4 1, S_01128428;
+ .timescale -12 -12;
+v01129FD0_0 .alias "CLK", 0 0, v0112A128_0;
+v0112A078_0 .var "Q", 3 0;
+v0112A0D0_0 .alias "RESETL", 0 0, v0112E4C8_0;
+E_01127788/0 .event negedge, v0112A0D0_0;
+E_01127788/1 .event posedge, v01129FD0_0;
+E_01127788 .event/or E_01127788/0, E_01127788/1;
+    .scope S_01128648;
+T_0 ;
+    %wait E_01127788;
+    %load/v 8, v0112A0D0_0, 1;
+    %cmpi/u 8, 0, 1;
+    %jmp/0xz  T_0.0, 4;
+    %set/v v0112A078_0, 0, 4;
+    %jmp T_0.1;
+T_0.0 ;
+    %ix/load 0, 1, 0;
+    %load/vp0 8, v0112A078_0, 4;
+    %set/v v0112A078_0, 8, 4;
+T_0.1 ;
+    %jmp T_0;
+    .thread T_0;
+    .scope S_01128538;
+T_1 ;
+    %load/v 8, v0112E3C0_0, 1;
+    %inv 8, 1;
+    %set/v v0112E3C0_0, 8, 1;
+    %delay 500, 0;
+    %jmp T_1;
+    .thread T_1;
+    .scope S_01128538;
+T_2 ;
+    %vpi_call 2 14 "$dumpfile", "counter_trans_tb.vcd";
+    %vpi_call 2 15 "$dumpvars", 1'sb0, S_01128538;
+    %vpi_call 2 16 "$monitor", $stime, " CLK=%b RESETL=%b Q=%b OUT=%b", v0112E3C0_0, v0112E470_0, v0112A078_0, v0112E418_0;
+    %set/v v0112E3C0_0, 0, 1;
+    %set/v v0112E470_0, 1, 1;
+    %delay 1000, 0;
+    %set/v v0112E470_0, 0, 1;
+    %delay 1000, 0;
+    %set/v v0112E470_0, 1, 1;
+    %delay 20000, 0;
+    %vpi_call 2 22 "$finish";
+    %end;
+    .thread T_2;
+# The file index is used to find the file name in the following table.
+:file_names 5;
+    "N/A";
+    "<interactive>";
+    "counter_trans_tb.v";
+    "counter_trans.v";
+    "counter.v";

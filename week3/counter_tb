@@ -1,0 +1,64 @@
+#! /c/iverilog/bin/vvp
+:ivl_version "0.9.7 " "(v0_9_7)";
+:vpi_time_precision - 12;
+:vpi_module "system";
+:vpi_module "v2005_math";
+:vpi_module "va_math";
+S_01053A10 .scope module, "counter_tb" "counter_tb" 2 2;
+ .timescale -12 -12;
+P_01091BB4 .param/l "STEP" 2 5, +C4<01111101000>;
+v0105EEE0_0 .var "CLK", 0 0;
+v0105EF38_0 .net "Q", 3 0, v01052B20_0; 1 drivers
+v0105EF90_0 .var "RESETL", 0 0;
+S_01052A98 .scope module, "counter" "counter" 2 7, 3 1, S_01053A10;
+ .timescale -12 -12;
+v01093540_0 .net "CLK", 0 0, v0105EEE0_0; 1 drivers
+v01052B20_0 .var "Q", 3 0;
+v01052B78_0 .net "RESETL", 0 0, v0105EF90_0; 1 drivers
+E_01091A50/0 .event negedge, v01052B78_0;
+E_01091A50/1 .event posedge, v01093540_0;
+E_01091A50 .event/or E_01091A50/0, E_01091A50/1;
+    .scope S_01052A98;
+T_0 ;
+    %wait E_01091A50;
+    %load/v 8, v01052B78_0, 1;
+    %cmpi/u 8, 0, 1;
+    %jmp/0xz  T_0.0, 4;
+    %set/v v01052B20_0, 0, 4;
+    %jmp T_0.1;
+T_0.0 ;
+    %ix/load 0, 1, 0;
+    %load/vp0 8, v01052B20_0, 4;
+    %set/v v01052B20_0, 8, 4;
+T_0.1 ;
+    %jmp T_0;
+    .thread T_0;
+    .scope S_01053A10;
+T_1 ;
+    %load/v 8, v0105EEE0_0, 1;
+    %inv 8, 1;
+    %set/v v0105EEE0_0, 8, 1;
+    %delay 500, 0;
+    %jmp T_1;
+    .thread T_1;
+    .scope S_01053A10;
+T_2 ;
+    %vpi_call 2 14 "$dumpfile", "counter_tb.vcd";
+    %vpi_call 2 15 "$dumpvars", 1'sb0, S_01053A10;
+    %vpi_call 2 16 "$monitor", $stime, " CLK=%b RESETL=%b Q=%b", v0105EEE0_0, v0105EF90_0, v0105EF38_0;
+    %set/v v0105EEE0_0, 0, 1;
+    %set/v v0105EF90_0, 1, 1;
+    %delay 1000, 0;
+    %set/v v0105EF90_0, 0, 1;
+    %delay 1000, 0;
+    %set/v v0105EF90_0, 1, 1;
+    %delay 20000, 0;
+    %vpi_call 2 22 "$finish";
+    %end;
+    .thread T_2;
+# The file index is used to find the file name in the following table.
+:file_names 4;
+    "N/A";
+    "<interactive>";
+    "counter_tb.v";
+    "counter.v";
